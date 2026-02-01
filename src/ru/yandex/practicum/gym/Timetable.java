@@ -5,7 +5,7 @@ import java.util.*;
 public class Timetable {
 
     private HashMap<DayOfWeek, TreeMap<TimeOfDay, ArrayList<String>>> timetable = new HashMap<>();
-    private HashMap <Coach, Integer> coachTimes = new HashMap<>();
+    private HashMap<Coach, Integer> coachTimes = new HashMap<>();
 
     public void addNewTrainingSession(TrainingSession trainingSession) {
         TreeMap <TimeOfDay, ArrayList<String>> dayTimetable = timetable.get(trainingSession.getDayOfWeek());
@@ -14,7 +14,7 @@ public class Timetable {
         }
 
         ArrayList<String> title = dayTimetable.get(trainingSession.getTimeOfDay());
-        if(title == null) {
+        if (title == null) {
             title = new ArrayList<>();
         }
 
@@ -22,7 +22,7 @@ public class Timetable {
         dayTimetable.put(trainingSession.getTimeOfDay(), title);
         timetable.put(trainingSession.getDayOfWeek(), dayTimetable);
 
-        if(coachTimes.containsKey(trainingSession.getCoach())) {
+        if (coachTimes.containsKey(trainingSession.getCoach())) {
             int count = coachTimes.get(trainingSession.getCoach()) + 1;
             coachTimes.put(trainingSession.getCoach(), count);
         } else {
@@ -32,7 +32,9 @@ public class Timetable {
 
     public TreeMap<TimeOfDay, ArrayList<String>> getTrainingSessionsForDay(DayOfWeek dayOfWeek) {
         TreeMap<TimeOfDay, ArrayList<String>> dayTimetable = timetable.get(dayOfWeek);
-        if (dayTimetable == null || dayTimetable.isEmpty()) { return null; }
+        if (dayTimetable == null || dayTimetable.isEmpty()) {
+            return null;
+        }
         return dayTimetable;
     }
 

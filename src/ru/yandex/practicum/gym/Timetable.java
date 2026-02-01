@@ -8,8 +8,8 @@ public class Timetable {
     private HashMap<Coach, Integer> coachTimes = new HashMap<>();
 
     public void addNewTrainingSession(TrainingSession trainingSession) {
-        TreeMap <TimeOfDay, ArrayList<String>> dayTimetable = timetable.get(trainingSession.getDayOfWeek());
-        if(dayTimetable == null) {
+        TreeMap<TimeOfDay, ArrayList<String>> dayTimetable = timetable.get(trainingSession.getDayOfWeek());
+        if (dayTimetable == null) {
             dayTimetable = new TreeMap<>();
         }
 
@@ -46,7 +46,7 @@ public class Timetable {
         return dayTimetable.get(timeOfDay);
     }
 
-    public List<CounterOfTrainings> getCountByCoaches(){
+    public List<CounterOfTrainings> getCountByCoaches() {
         List<CounterOfTrainings> result = new ArrayList<>();
         for (Map.Entry<Coach, Integer> entry : coachTimes.entrySet()) {
             result.add(new CounterOfTrainings(entry.getKey(), entry.getValue()));

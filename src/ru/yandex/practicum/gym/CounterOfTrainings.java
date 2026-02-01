@@ -22,7 +22,12 @@ public class CounterOfTrainings implements Comparable<CounterOfTrainings> {
                 " - " + counter;
     }
 
-    public Coach getCoach() { return coach; }
-    public int getCounter() { return counter; }
+    public Coach getCoach() {
+        return coach;
+    }
+
+    public int getCounter() {
+        return counter;
+    }
 
 }

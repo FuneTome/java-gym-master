@@ -19,16 +19,16 @@ public class TimetableTest {
         timetable.addNewTrainingSession(singleTrainingSession);
 
         //Проверить, что за понедельник вернулось одно занятие
-        TreeMap<TimeOfDay, ArrayList<String>> mondayList = timetable.getTrainingSessionsForDay(DayOfWeek.MONDAY);
+        TreeMap<TimeOfDay, ArrayList<TrainingSession>> mondayList = timetable.getTrainingSessionsForDay(DayOfWeek.MONDAY);
         ArrayList<String> monday = new ArrayList<>();
-        for(Map.Entry<TimeOfDay, ArrayList<String>> entry : mondayList.entrySet()) {
-            monday.add(entry.getKey().toString() + " - " + entry.getValue());
+        for(Map.Entry<TimeOfDay, ArrayList<TrainingSession>> entry : mondayList.entrySet()) {
+            monday.add(entry.getKey().toString() + " - " + entry.getValue().toString());
         }
         ArrayList<String> mondayTest = new ArrayList<>();
         mondayTest.add("13:00 - [Акробатика для детей]");
         Assertions.assertEquals(mondayTest, monday);
         //Проверить, что за вторник не вернулось занятий
-        Assertions.assertNull(timetable.getTrainingSessionsForDay(DayOfWeek.TUESDAY));
+        Assertions.assertEquals(new TreeMap<>(), timetable.getTrainingSessionsForDay(DayOfWeek.TUESDAY));
     }
 
     @Test
@@ -57,9 +57,9 @@ public class TimetableTest {
 
 
         // Проверить, что за понедельник вернулось одно занятие
-        TreeMap<TimeOfDay, ArrayList<String>> mondayList = timetable.getTrainingSessionsForDay(DayOfWeek.MONDAY);
+        TreeMap<TimeOfDay, ArrayList<TrainingSession>> mondayList = timetable.getTrainingSessionsForDay(DayOfWeek.MONDAY);
         ArrayList<String> monday = new ArrayList<>();
-        for(Map.Entry<TimeOfDay, ArrayList<String>> entry : mondayList.entrySet()) {
+        for(Map.Entry<TimeOfDay, ArrayList<TrainingSession>> entry : mondayList.entrySet()) {
             monday.add(entry.getKey().toString() + " - " + entry.getValue());
         }
         ArrayList<String> mondayTest = new ArrayList<>();
@@ -67,9 +67,9 @@ public class TimetableTest {
         Assertions.assertEquals(mondayTest, monday);
 
         // Проверить, что за четверг вернулось два занятия в правильном порядке: сначала в 13:00, потом в 20:00
-        TreeMap<TimeOfDay, ArrayList<String>> thursdayList = timetable.getTrainingSessionsForDay(DayOfWeek.THURSDAY);
+        TreeMap<TimeOfDay, ArrayList<TrainingSession>> thursdayList = timetable.getTrainingSessionsForDay(DayOfWeek.THURSDAY);
         ArrayList<String> thursday = new ArrayList<>();
-        for(Map.Entry<TimeOfDay, ArrayList<String>> entry : thursdayList.entrySet()) {
+        for(Map.Entry<TimeOfDay, ArrayList<TrainingSession>> entry : thursdayList.entrySet()) {
             thursday.add(entry.getKey().toString() + " - " + entry.getValue());
         }
         ArrayList<String> thursdayTest = new ArrayList<>();
@@ -78,7 +78,7 @@ public class TimetableTest {
         Assertions.assertEquals(thursdayTest, thursday);
 
         // Проверить, что за вторник не вернулось занятий
-        Assertions.assertNull(timetable.getTrainingSessionsForDay(DayOfWeek.TUESDAY));
+        Assertions.assertEquals(new TreeMap<>(), timetable.getTrainingSessionsForDay(DayOfWeek.TUESDAY));
     }
 
     @Test
@@ -95,7 +95,7 @@ public class TimetableTest {
         arrOne.add("Акробатика для детей");
 
         //Проверить, что за понедельник в 13:00 вернулось одно занятие
-        Assertions.assertEquals(arrOne, timetable.getTrainingSessionsForDayAndTime(DayOfWeek.MONDAY, new TimeOfDay(13, 0)));
+        Assertions.assertEquals(arrOne.toString(), timetable.getTrainingSessionsForDayAndTime(DayOfWeek.MONDAY, new TimeOfDay(13, 0)).toString());
         //Проверить, что за понедельник в 14:00 не вернулось занятий
         Assertions.assertNull(timetable.getTrainingSessionsForDayAndTime(DayOfWeek.TUESDAY, new TimeOfDay(14, 0)));
     }
@@ -118,7 +118,9 @@ public class TimetableTest {
         timetable.addNewTrainingSession(secondTrainingSession);
 
         List <CounterOfTrainings> list = timetable.getCountByCoaches();
-        Assertions.assertEquals("[Иванов Иван Иванович - 2]", list.toString());
+        
+        Assertions.assertEquals("Иванов Иван Иванович", list.get(0).getCoach().toString());
+        Assertions.assertEquals(2, list.get(0).getCounter());
     }
 
     @Test
@@ -144,7 +146,12 @@ public class TimetableTest {
         timetable.addNewTrainingSession(thirdTrainingSession);
 
         List <CounterOfTrainings> list = timetable.getCountByCoaches();
-        Assertions.assertEquals("[Иванов Иван Иванович - 2, Николаев Николай Николаевич - 1]", list.toString());
+
+        Assertions.assertEquals("Иванов Иван Иванович", list.get(0).getCoach().toString());
+        Assertions.assertEquals(2, list.get(0).getCounter());
+
+        Assertions.assertEquals("Николаев Николай Николаевич", list.get(1).getCoach().toString());
+        Assertions.assertEquals(1, list.get(1).getCounter());
     }
 
     @Test
@@ -179,6 +186,47 @@ public class TimetableTest {
         timetable.addNewTrainingSession(fiveTrainingSession);
 
         List <CounterOfTrainings> list = timetable.getCountByCoaches();
-        Assertions.assertEquals("[Николаев Николай Николаевич - 2, Иванов Иван Иванович - 2, Петров Петр Петрович - 1]", list.toString());
+        Assertions.assertEquals("Николаев Николай Николаевич", list.get(0).getCoach().toString());
+        Assertions.assertEquals(2, list.get(0).getCounter());
+
+        Assertions.assertEquals("Иванов Иван Иванович", list.get(1).getCoach().toString());
+        Assertions.assertEquals(2, list.get(1).getCounter());
+
+        Assertions.assertEquals("Петров Петр Петрович", list.get(2).getCoach().toString());
+        Assertions.assertEquals(1, list.get(2).getCounter());
+    }
+
+    @Test
+    void testGetTrainingSessionsForOneCoachAndMultitraning() {
+        Timetable timetable = new Timetable();
+        Coach coach = new Coach("Иванов", "Иван", "Иванович");
+
+        Group groupOne = new Group("one", Age.CHILD, 60);
+        Group groupTwo = new Group("two", Age.CHILD, 60);
+        Group groupThree = new Group("three", Age.CHILD, 60);
+        Group groupFour = new Group("four", Age.CHILD, 60);
+        Group groupFive = new Group("five", Age.CHILD, 60);
+
+        TrainingSession oneTrainingSession = new TrainingSession(groupOne, coach, DayOfWeek.MONDAY,
+                new TimeOfDay(10, 0));
+        TrainingSession twoTrainingSession = new TrainingSession(groupTwo, coach, DayOfWeek.MONDAY,
+                new TimeOfDay(10, 0));
+        TrainingSession threeTrainingSession = new TrainingSession(groupThree, coach, DayOfWeek.MONDAY,
+                new TimeOfDay(10, 0));
+        TrainingSession fourTrainingSession = new TrainingSession(groupFour, coach, DayOfWeek.MONDAY,
+                new TimeOfDay(10, 0));
+        TrainingSession fiveTrainingSession = new TrainingSession(groupFive, coach, DayOfWeek.MONDAY,
+                new TimeOfDay(10, 0));
+
+        timetable.addNewTrainingSession(oneTrainingSession);
+        timetable.addNewTrainingSession(twoTrainingSession);
+        timetable.addNewTrainingSession(threeTrainingSession);
+        timetable.addNewTrainingSession(fourTrainingSession);
+        timetable.addNewTrainingSession(fiveTrainingSession);
+
+        List <CounterOfTrainings> list = timetable.getCountByCoaches();
+
+        Assertions.assertEquals("Иванов Иван Иванович", list.get(0).getCoach().toString());
+        Assertions.assertEquals(5, list.get(0).getCounter());
     }
 }

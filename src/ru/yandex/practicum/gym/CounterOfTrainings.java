@@ -14,14 +14,6 @@ public class CounterOfTrainings implements Comparable<CounterOfTrainings> {
         return o.counter - this.counter;
     }
 
-    @Override
-    public String toString() {
-        return coach.getSurname() +
-                " " + coach.getName() +
-                " " + coach.getMiddleName() +
-                " - " + counter;
-    }
-
     public Coach getCoach() {
         return coach;
     }

@@ -8,7 +8,7 @@ public class Timetable {
     private Map<Coach, Integer> coachTimes = new HashMap<>();
 
     public Timetable() {
-        for(DayOfWeek day : DayOfWeek.values()) {
+        for (DayOfWeek day : DayOfWeek.values()) {
         timetable.put(day, new TreeMap<>());
         }
     }

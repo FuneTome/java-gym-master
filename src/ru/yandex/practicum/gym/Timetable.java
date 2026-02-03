@@ -41,6 +41,7 @@ public class Timetable {
         if (dayTimetable == null) {
             return new ArrayList<>();
         }
+
         return dayTimetable.get(timeOfDay);
     }
 

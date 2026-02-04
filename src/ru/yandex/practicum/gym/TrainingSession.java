@@ -22,6 +22,11 @@ public class TrainingSession {
         return group;
     }
 
+    @Override
+    public String toString() {
+        return getGroup().getTitle();
+    }
+
     public Coach getCoach() {
         return coach;
     }

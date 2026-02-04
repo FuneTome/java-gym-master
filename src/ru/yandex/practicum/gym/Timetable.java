@@ -23,26 +23,25 @@ public class Timetable {
             sessions.add(trainingSession);
             return sessions;
         });
-        timetable.put(trainingSession.getDayOfWeek(), dayTimetable);
-
         coachTimes.compute(trainingSession.getCoach(), (coach, count) -> count == null ? 1 : count + 1);
     }
 
-    public TreeMap<TimeOfDay, ArrayList<TrainingSession>> getTrainingSessionsForDay(DayOfWeek dayOfWeek) {
+    public List<TrainingSession> getTrainingSessionsForDay(DayOfWeek dayOfWeek) {
         TreeMap<TimeOfDay, ArrayList<TrainingSession>> dayTimetable = timetable.get(dayOfWeek);
         if (dayTimetable == null || dayTimetable.isEmpty()) {
-            return new TreeMap<>();
+            return new ArrayList<>();
         }
-        return dayTimetable;
+
+        List<TrainingSession> result = new ArrayList<>();
+        for (ArrayList<TrainingSession> sessions : dayTimetable.values()) {
+            result.addAll(sessions);
+        }
+        return result;
     }
 
     public ArrayList<TrainingSession> getTrainingSessionsForDayAndTime(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) {
         TreeMap<TimeOfDay, ArrayList<TrainingSession>> dayTimetable = timetable.get(dayOfWeek);
-        if (dayTimetable == null) {
-            return new ArrayList<>();
-        }
-
-        return dayTimetable.get(timeOfDay);
+        return dayTimetable.getOrDefault(timeOfDay, new ArrayList<>());
     }
 
     public List<CounterOfTrainings> getCountByCoaches() {
